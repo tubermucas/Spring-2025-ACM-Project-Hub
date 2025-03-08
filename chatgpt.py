@@ -71,10 +71,14 @@ def main():
         new_head = (new_x, new_y)
 
         # 1. Check for collisions with walls
-        if (new_x < 0 or new_x >= CELL_COUNT or
-            new_y < 0 or new_y >= CELL_COUNT):
-            # Hit a wall -> Game Over
-            running = False
+        if new_x < 0:
+            new_head = (CELL_COUNT, new_y)
+        elif new_x >= CELL_COUNT:
+            new_head = (0, new_y)
+        elif new_y < 0:
+            new_head = (new_x, CELL_COUNT)
+        elif new_y >= CELL_COUNT:
+            new_head = (new_x, 0)
 
         # 2. Check for collisions with self
         if new_head in snake:
