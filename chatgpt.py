@@ -45,7 +45,7 @@ def main():
     # 6. Game loop
     running = True
     while running:
-        clock.tick(10)  # Limit to 10 frames per second (adjust for difficulty)
+        clock.tick(5)  # Limit to 10 frames per second (adjust for difficulty)
 
         # --- EVENT HANDLING ---
         for event in pygame.event.get():
@@ -72,11 +72,11 @@ def main():
 
         # 1. Check for collisions with walls
         if new_x < 0:
-            new_head = (CELL_COUNT, new_y)
+            new_head = (CELL_COUNT - 1, new_y)
         elif new_x >= CELL_COUNT:
             new_head = (0, new_y)
         elif new_y < 0:
-            new_head = (new_x, CELL_COUNT)
+            new_head = (new_x, CELL_COUNT - 1)
         elif new_y >= CELL_COUNT:
             new_head = (new_x, 0)
 
