@@ -43,9 +43,13 @@ def main():
     food = get_random_food_position()
 
     # 6. Game loop
+
+    # define next directions, AVOID BUG OF SNAKE GOING INTO ITSELF
+    next_dx, next_dy = dx, dy
+    
     running = True
     while running:
-        clock.tick(5)  # Limit to 10 frames per second (adjust for difficulty)
+        clock.tick(10)  # Limit to 10 frames per second (adjust for difficulty)
 
         # --- EVENT HANDLING ---
         for event in pygame.event.get():
@@ -54,13 +58,16 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 # Prevent snake from going directly backward
                 if event.key == pygame.K_LEFT and dx != 1:
-                    dx, dy = -1, 0
+                    next_dx, next_dy = -1, 0
                 elif event.key == pygame.K_RIGHT and dx != -1:
-                    dx, dy = 1, 0
+                    next_dx, next_dy = 1, 0
                 elif event.key == pygame.K_UP and dy != 1:
-                    dx, dy = 0, -1
+                    next_dx, next_dy = 0, -1
                 elif event.key == pygame.K_DOWN and dy != -1:
-                    dx, dy = 0, 1
+                    next_dx, next_dy = 0, 1
+        
+        #Apply directions change ONCE PER FRAME
+        dx, dy = next_dx, next_dy
 
         # --- UPDATE SNAKE ---
         # Current head position
