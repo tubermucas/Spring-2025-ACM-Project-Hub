@@ -47,6 +47,9 @@ def main():
     # define next directions, AVOID BUG OF SNAKE GOING INTO ITSELF
     next_dx, next_dy = dx, dy
     
+    #Set the mouse cursor to invisible
+    pygame.mouse.set_visible(False)
+
     running = True
     while running:
         clock.tick(10)  # Limit to 10 frames per second (adjust for difficulty)
@@ -57,16 +60,16 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 # Prevent snake from going directly backward
-                if event.key == pygame.K_LEFT and dx != 1:
+                if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and dx != 1:
                     next_dx, next_dy = -1, 0
-                elif event.key == pygame.K_RIGHT and dx != -1:
+                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and dx != -1:
                     next_dx, next_dy = 1, 0
-                elif event.key == pygame.K_UP and dy != 1:
+                elif (event.key == pygame.K_UP or event.key == pygame.K_w) and dy != 1:
                     next_dx, next_dy = 0, -1
-                elif event.key == pygame.K_DOWN and dy != -1:
+                elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and dy != -1:
                     next_dx, next_dy = 0, 1
         
-        #Apply directions change ONCE PER FRAME
+        # Apply directions change ONCE PER FRAME
         dx, dy = next_dx, next_dy
 
         # --- UPDATE SNAKE ---
