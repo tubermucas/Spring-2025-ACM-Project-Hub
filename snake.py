@@ -43,6 +43,13 @@ def main():
     food = get_random_food_position()
 
     # 6. Game loop
+
+    # define next directions, AVOID BUG OF SNAKE GOING INTO ITSELF
+    next_dx, next_dy = dx, dy
+    
+    #Set the mouse cursor to invisible
+    pygame.mouse.set_visible(False)
+
     running = True
     while running:
         clock.tick(10)  # Limit to 10 frames per second (adjust for difficulty)
@@ -53,14 +60,17 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 # Prevent snake from going directly backward
-                if event.key == pygame.K_LEFT and dx != 1:
-                    dx, dy = -1, 0
-                elif event.key == pygame.K_RIGHT and dx != -1:
-                    dx, dy = 1, 0
-                elif event.key == pygame.K_UP and dy != 1:
-                    dx, dy = 0, -1
-                elif event.key == pygame.K_DOWN and dy != -1:
-                    dx, dy = 0, 1
+                if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and dx != 1:
+                    next_dx, next_dy = -1, 0
+                elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and dx != -1:
+                    next_dx, next_dy = 1, 0
+                elif (event.key == pygame.K_UP or event.key == pygame.K_w) and dy != 1:
+                    next_dx, next_dy = 0, -1
+                elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and dy != -1:
+                    next_dx, next_dy = 0, 1
+        
+        # Apply directions change ONCE PER FRAME
+        dx, dy = next_dx, next_dy
 
         # --- UPDATE SNAKE ---
         # Current head position
@@ -71,10 +81,14 @@ def main():
         new_head = (new_x, new_y)
 
         # 1. Check for collisions with walls
-        if (new_x < 0 or new_x >= CELL_COUNT or
-            new_y < 0 or new_y >= CELL_COUNT):
-            # Hit a wall -> Game Over
-            running = False
+        if new_x < 0:
+            new_head = (CELL_COUNT - 1, new_y)
+        elif new_x >= CELL_COUNT:
+            new_head = (0, new_y)
+        elif new_y < 0:
+            new_head = (new_x, CELL_COUNT - 1)
+        elif new_y >= CELL_COUNT:
+            new_head = (new_x, 0)
 
         # 2. Check for collisions with self
         if new_head in snake:
@@ -87,7 +101,10 @@ def main():
         # 3. Check if we ate the food
         if new_head == food:
             # Generate a new food position; don't pop the tail (snake grows)
-            food = get_random_food_position()
+            temp_food = get_random_food_position()
+            while temp_food in snake or temp_food is new_head:
+                temp_food = get_random_food_position()
+            food = temp_food
         else:
             # Move forward (remove the tail)
             snake.pop()
