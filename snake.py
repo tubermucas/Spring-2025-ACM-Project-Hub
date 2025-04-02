@@ -4,7 +4,7 @@ import random
 
 # Initialize constants
 CELL_SIZE = 30   # Size of each grid cell in pixels
-CELL_COUNT = 20  # Number of cells horizontally and vertically (so 400x400 window)
+CELL_COUNT = 20  # Number of cells horizontally and vertically (so 600x600 window)
 SCREEN_WIDTH = CELL_SIZE * CELL_COUNT
 SCREEN_HEIGHT = CELL_SIZE * CELL_COUNT
 
@@ -122,9 +122,6 @@ def main():
 
     # define next directions, AVOID BUG OF SNAKE GOING INTO ITSELF
     next_dx, next_dy = dx, dy
-    
-    #Set the mouse cursor to invisible
-    #pygame.mouse.set_visible(False)
 
     running = True
     while running:
