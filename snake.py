@@ -23,6 +23,10 @@ backgrounds = [
 ]
 current_background = 0  # Index for current background
 
+# Function to play the snake sounds
+def play_sound(sound):
+    pygame.mixer.Sound.play(sound)
+
 # Speed settings
 SPEED_LEVELS = {"Easy": 5.0, "Normal": 10.0, "Hard": 15.0}
 SPEED_CHANGES = {"Easy": 0.25, "Normal": 0.5, "Hard": 0.75}
@@ -101,6 +105,11 @@ def main():
              (CELL_COUNT // 2 - 1, CELL_COUNT // 2),
              (CELL_COUNT // 2 - 2, CELL_COUNT // 2)]
     
+    # Initialize snake sounds
+    movement_sound = pygame.mixer.Sound("movement.wav")
+    eat_sound = pygame.mixer.Sound("eating.wav")
+    death_sound = pygame.mixer.Sound("death-sound-pixel.wav")
+    
     # The snake's direction (dx, dy). Start moving right.
     dx, dy = 1, 0
 
@@ -174,6 +183,8 @@ def main():
         # 2. Check for collisions with self
         if new_head in snake:
             # Hit itself -> Game Over
+            play_sound(death_sound)
+            pygame.time.delay(1000)  # Wait for a second to let the sound play
             running = False
 
         # Walls around the borders
@@ -185,6 +196,7 @@ def main():
 
         # 3. Check if we ate the food
         if new_head == (food[0], food[1]):
+            play_sound(eat_sound) # play snake eat food sound
             snake_color = food[2] # changes snake color based on food
             speed += speed_change # increase snake speed after eating food
             # Generate a new food position; don't pop the tail (snake grows)
