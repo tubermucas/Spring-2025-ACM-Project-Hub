@@ -3,7 +3,7 @@ import sys
 import random
 
 # Initialize constants
-CELL_SIZE = 20   # Size of each grid cell in pixels
+CELL_SIZE = 30   # Size of each grid cell in pixels
 CELL_COUNT = 20  # Number of cells horizontally and vertically (so 400x400 window)
 SCREEN_WIDTH = CELL_SIZE * CELL_COUNT
 SCREEN_HEIGHT = CELL_SIZE * CELL_COUNT
@@ -23,6 +23,44 @@ backgrounds = [
 ]
 current_background = 0  # Index for current background
 
+# Speed settings
+SPEED_LEVELS = {"Easy": 5.0, "Normal": 10.0, "Hard": 15.0}
+SPEED_CHANGES = {"Easy": 0.25, "Normal": 0.5, "Hard": 0.75}
+speed_change = 0
+
+def show_menu(screen):
+    global speed_change
+    font = pygame.font.Font(None, 36)
+    screen.fill(BLACK)
+    
+    options = ["Easy", "Normal", "Hard"]
+    selected = 0
+    
+    while True:
+        screen.fill(BLACK)
+        title = font.render("Select Speed: Use arrow keys, ENTER to select", True, WHITE)
+        screen.blit(title, (20, 50))
+        
+        for i, option in enumerate(options):
+            color = GREEN if i == selected else WHITE
+            text = font.render(option, True, color)
+            screen.blit(text, (SCREEN_WIDTH // 3, 150 + i * 40))
+        
+        pygame.display.flip()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected = (selected - 1) % len(options)
+                elif event.key == pygame.K_DOWN:
+                    selected = (selected + 1) % len(options)
+                elif event.key == pygame.K_RETURN:
+                    speed_change = SPEED_CHANGES[options[selected]]
+                    return SPEED_LEVELS[options[selected]]
+
 # 1. Initialize Pygame & setup display
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -30,6 +68,9 @@ pygame.display.set_caption("Snake Game")
 
 # 2. Set up clock for controlling the frame rate
 clock = pygame.time.Clock()
+
+# 3. Show speed selection menu
+speed = show_menu(screen)
 
 # Initialize sound
 pygame.mixer.init()
@@ -44,7 +85,7 @@ paused = False
 def get_random_color():
     return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
-# 3. Define a helper function to get a random position for the food
+# 4. Define a helper function to get a random position for the food
 def get_random_food_position():
     # Randomly place food within the grid (0 <= x < CELL_COUNT, 0 <= y < CELL_COUNT)
     x = random.randint(0, CELL_COUNT - 1)
@@ -53,8 +94,8 @@ def get_random_food_position():
     return (x, y, color)
 
 def main():
-    global current_background, paused, volume
-    # 4. Initialize the snake
+    global current_background, paused, volume, speed
+    # 5. Initialize the snake
     # Snake is a list of (x, y) positions; start in the middle with length 3
     snake = [(CELL_COUNT // 2, CELL_COUNT // 2),
              (CELL_COUNT // 2 - 1, CELL_COUNT // 2),
@@ -63,11 +104,11 @@ def main():
     # The snake's direction (dx, dy). Start moving right.
     dx, dy = 1, 0
 
-    # 5. Place initial food and snake color
+    # 6. Place initial food and snake color
     snake_color = GREEN
     food = get_random_food_position()
 
-    # 6. Game loop
+    # 7. Game loop
 
     # define next directions, AVOID BUG OF SNAKE GOING INTO ITSELF
     next_dx, next_dy = dx, dy
@@ -77,7 +118,7 @@ def main():
 
     running = True
     while running:
-        clock.tick(10)  # Limit to 10 frames per second (adjust for difficulty)
+        clock.tick(speed)  # Adjust speed based on difficulty
 
         # --- EVENT HANDLING ---
         for event in pygame.event.get():
@@ -145,6 +186,7 @@ def main():
         # 3. Check if we ate the food
         if new_head == (food[0], food[1]):
             snake_color = food[2] # changes snake color based on food
+            speed += speed_change # increase snake speed after eating food
             # Generate a new food position; don't pop the tail (snake grows)
             temp_food = get_random_food_position()
             while temp_food in snake or temp_food is new_head:
