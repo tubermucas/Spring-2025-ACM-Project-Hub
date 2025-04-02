@@ -109,6 +109,7 @@ def main():
     movement_sound = pygame.mixer.Sound("movement.wav")
     eat_sound = pygame.mixer.Sound("eating.wav")
     death_sound = pygame.mixer.Sound("death-sound-pixel.wav")
+    move = False
     
     # The snake's direction (dx, dy). Start moving right.
     dx, dy = 1, 0
@@ -134,6 +135,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
+                move = True
                 # Prevent snake from going directly backward
                 if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and dx != 1:
                     next_dx, next_dy = -1, 0
@@ -151,6 +153,8 @@ def main():
                 elif event.key == pygame.K_MINUS:  # Decrease volume
                     volume = max(0.0, volume - 0.1)
                     pygame.mixer.music.set_volume(volume)
+                else:
+                    move = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if 10 <= event.pos[0] <= 110 and 10 <= event.pos[1] <= 50:
                     current_background = (current_background + 1) % len(backgrounds)
@@ -193,6 +197,11 @@ def main():
 
         # If still safe, insert new head
         snake.insert(0, new_head)
+        
+        # play movement sounds only when WASD or arrow keys are pressed
+        if move:
+            play_sound(movement_sound)
+            move = False
 
         # 3. Check if we ate the food
         if new_head == (food[0], food[1]):
