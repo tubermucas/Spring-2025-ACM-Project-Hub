@@ -144,6 +144,8 @@ def main():
                     next_dx, next_dy = 0, 1
                 elif event.key == pygame.K_p:  # Pause toggle
                     paused = not paused
+                elif event.key == pygame.K_b:  # Change background
+                    current_background = (current_background + 1) % len(backgrounds)
                 elif event.key == pygame.K_PLUS or event.key == pygame.K_EQUALS:  # Increase volume
                     volume = min(1.0, volume + 0.1)
                     pygame.mixer.music.set_volume(volume)
@@ -152,9 +154,6 @@ def main():
                     pygame.mixer.music.set_volume(volume)
                 else:
                     move = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if 10 <= event.pos[0] <= 110 and 10 <= event.pos[1] <= 50:
-                    current_background = (current_background + 1) % len(backgrounds)
         
         if paused:
             continue
@@ -223,14 +222,6 @@ def main():
 
         # Draw the food
         pygame.draw.rect(screen, food[2], (food[0] * CELL_SIZE, food[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE))
-
-        # Draw buttons
-        pygame.draw.rect(screen, WHITE, (10, 10, 100, 40))
-        font = pygame.font.Font(None, 24)
-        screen.blit(font.render("Change BG", True, BLACK), (20, 20))
-        
-        pygame.draw.rect(screen, WHITE, (120, 10, 80, 40))
-        screen.blit(font.render("Pause", True, BLACK), (140, 20))
         
         pygame.display.flip()
 
