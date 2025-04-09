@@ -4,8 +4,8 @@ import random
 import json
 
 # Initialize constants
-CELL_SIZE = 30   # Size of each grid cell in pixels
-CELL_COUNT = 20  # Number of cells horizontally and vertically (so 600x600 window)
+CELL_SIZE = 25   # Size of each grid cell in pixels
+CELL_COUNT = 30  # Number of cells horizontally and vertically (so 600x600 window)
 
 PAUSED_MENU_CELLS = 13 # Width of the paused menu
 PAUSED_MENU_HEIGHT = PAUSED_MENU_CELLS * CELL_SIZE # Height of the paused menu
@@ -227,7 +227,8 @@ def main():
              (CELL_COUNT // 2 - 1, CELL_COUNT // 2),
              (CELL_COUNT // 2 - 2, CELL_COUNT // 2)]
 
-    player_name = get_player_name(screen, font_sellected)
+    font = pygame.font.Font(font_sellected, 30)
+    player_name = get_player_name(screen, font)
     
     # Initialize snake sounds
     movement_sound = pygame.mixer.Sound("Sound/movement.wav")
