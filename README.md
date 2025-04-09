@@ -8,3 +8,8 @@ This project is designed to help students learn by doing. Instead of traditional
 Our end goal is to showcase the project in a final event where you can present your work. This isn’t just about making a game; it’s about building a project that demonstrates your skills and looks great on your resume, boosting your internship chances and paving the way for future Project Hubs.
 
 ## Documentation
+
+In this branch, among the changes made from the first ever version of the game, there are:
+- Before starting the game, you have to write your name, and your score is shown in the top right of the screen. After you lose, your name and score gets store in a json file so it can be used or shown later. At the same time, your name and score gets printed in the terminal whenever you die as well.
+- Now, if you go you go out of bond, you get teleported to the other side of the board.
+- Bug fixes include that now apples do not spawn in your body, and you don't kill yourself by moving more than once per frame, since the snake only moves once per frame.
