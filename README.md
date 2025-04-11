@@ -22,3 +22,9 @@ https://github.com/tubermucas <br />
 - Pause menu: Now the user can press ESC to stop the game and a menu will show up with options: Resume - unpause the game, Restart - start the game over with a score 0, Change Bg (Background) - by pressing ENTER the background changes, Music On/Off - the music turns on and off by pressing ENTER, Exit - for now it quits the game completely, for the future it is supposed to send the user back to the main menu (main menu is not implemented yet).
 - ScoreBoard: The screen is divided into two parts: a black rectangle on top with the current user's score and the play area itself.
 - Font: The chosen font for all text in the game is Press Start 2P.
+
+**Minh** <br />
+https://github.com/CodingMinh <br />
+Speed up and teleporting apple for challenge mode
+- In challenge mode, if your score (the number of apples eaten) is >= 10 and < 15, you significantly speed up
+- If your score is >= 15 and < 20, the apples randomly teleport every 10 seconds (gotta go fast lol)
