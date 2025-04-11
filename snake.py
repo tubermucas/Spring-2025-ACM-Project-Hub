@@ -133,10 +133,10 @@ def main_menu(screen):
                 sys.exit()
 
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected_index = (selected_index - 1) % len(selectable_indexes)
                     selected = selectable_indexes[selected_index]
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected_index = (selected_index + 1) % len(selectable_indexes)
                     selected = selectable_indexes[selected_index]
                 elif event.key == pygame.K_RETURN:
@@ -343,8 +343,6 @@ def death_menu(score, player_name):
         pygame.display.flip()
 
 
-
-
 # --- HELPER FUNCTIONS ---
 
 # Function to play the snake sounds
@@ -391,6 +389,7 @@ def get_player_name(screen, font):
 # --- GAME ---
 
 def game(mode, difficulty):
+    flipped_once = False
     global screen, current_background, best_score, hard_mode_unlocked
     
     # set up the speed according to the difficulty
@@ -446,17 +445,29 @@ def game(mode, difficulty):
     while running:
         clock.tick(speed)  # Adjust speed based on difficulty
 
-        # --- CHALLENGE MODE TOGGLE ---
-        if 5 < score < 10:
-            pass # Call 1st challenge function
-        elif score < 15:
-            pass # Call 2nd challenge function
-        elif score < 20:
-            pass # Call 3rd challenge function
-        elif score < 25:
-            pass # Call 4th challenge function
-        else:
-            pass # Call 5th challenge function
+        if mode == "Challenge Mode":
+            # --- CHALLENGE MODE TOGGLE ---
+            if 5 <= score < 10 and not flipped_once:
+                snake.reverse()
+
+                x1, y1 = snake[0]
+                x2, y2 = snake[1]
+
+                dx = x1 - x2
+                dy = y1 - y2
+
+                next_dx = dx
+                next_dy = dy
+
+                flipped_once = True
+            elif score < 15:
+                pass # Call 2nd challenge function
+            elif score < 20:
+                pass # Call 3rd challenge function
+            elif score < 25:
+                pass # Call 4th challenge function
+            else:
+                pass # Call 5th challenge function
 
         # --- EVENT HANDLING ---
         for event in pygame.event.get():
@@ -529,7 +540,7 @@ def game(mode, difficulty):
             play_sound(eat_sound) # play snake eat food sound
             snake_color = food[2] # changes snake color based on food
             speed += speed_change # increase snake speed after eating food
-            score += 1  # Increase score by 10 when food is eaten
+            score += 1  # Increase score by 1 when food is eaten
 
             if mode == "Classic Mode" and not hard_mode_unlocked:
                 if (score >= 10 and difficulty == 'Hard') or (score >= 20 and difficulty == 'Normal'):
@@ -540,6 +551,7 @@ def game(mode, difficulty):
             while temp_food in snake or temp_food is new_head:
                 temp_food = get_random_food_position()
             food = temp_food
+            flipped_once = False
         else:
             # Move forward (remove the tail)
             snake.pop()
