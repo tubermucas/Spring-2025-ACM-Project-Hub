@@ -415,7 +415,8 @@ def game(mode, difficulty):
     # Ask player's name to store it later, only in hard difficulty
     player_name = None
     if difficulty == 'Hard' and mode == 'Classic Mode':
-        player_name = get_player_name(screen, font)
+        font2 = pygame.font.Font(font_sellected, 20)
+        player_name = get_player_name(screen, font2)
 
     
     # Initialize snake sounds
