@@ -532,7 +532,7 @@ def game(mode, difficulty):
             score += 1  # Increase score by 10 when food is eaten
 
             if mode == "Classic Mode" and not hard_mode_unlocked:
-                if (score >= 10 and difficulty == 'Hard') or (score >= 30 and difficulty == 'Normal'):
+                if (score >= 10 and difficulty == 'Hard') or (score >= 20 and difficulty == 'Normal'):
                     hard_mode_unlocked = True
 
             # Generate a new food position; don't pop the tail (snake grows)
