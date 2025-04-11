@@ -231,11 +231,11 @@ def pause_menu(screen, mode, difficulty):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected = (selected - 1) % len(options)
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected = (selected + 1) % len(options)
-                elif event.key == pygame.K_ESCAPE or event.key == pygame.K_w:
+                elif event.key == pygame.K_ESCAPE:
                     return
                 elif event.key == pygame.K_RETURN:
                     if options[selected] == "Resume":
@@ -532,7 +532,7 @@ def game(mode, difficulty):
             score += 1  # Increase score by 10 when food is eaten
 
             if mode == "Classic Mode" and not hard_mode_unlocked:
-                if (score >= 5 and difficulty == 'Hard') or (score >= 30 and difficulty == 'Normal'):
+                if (score >= 10 and difficulty == 'Hard') or (score >= 30 and difficulty == 'Normal'):
                     hard_mode_unlocked = True
 
             # Generate a new food position; don't pop the tail (snake grows)
