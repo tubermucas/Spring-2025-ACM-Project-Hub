@@ -9,7 +9,14 @@ Our end goal is to showcase the project in a final event where you can present y
 
 ## Documentation
 
+**Gabriel** <br />
 In this branch, among the changes made from the first ever version of the game, there are:
-- Before starting the game, you have to write your name, and your score is shown in the top right of the screen. After you lose, your name and score gets store in a json file so it can be used or shown later. At the same time, your name and score gets printed in the terminal whenever you die as well.
-- Now, if you go you go out of bond, you get teleported to the other side of the board.
+- Before starting the game, you have to write your name, and your score is shown in the top right of the screen. After you lose, your name and score gets stored in a json file so it can be used or shown later. At the same time, your name and score gets printed in the terminal whenever you die as well.
+- Now, if you go you go out of bounds, you get teleported to the other side of the board.
 - Bug fixes include that now apples do not spawn in your body, and you don't kill yourself by moving more than once per frame, since the snake only moves once per frame.
+
+**Tima** <br />
+"Resume", "Restart", "Change BG", "Music On/Off", "Exit
+- Pause menu: Now the user can press ESC to stop the game and a menu will show up with options: Resume - unpause the game, Restart - start the game over with a score 0, Change Bg (Background) - by pressing ENTER the background changes, Music On/Off - the music turns on and off by pressing ENTER, Exit - for now it quits the game completely, for the future it is supposed to send the user back to the main menu (main menu is not implemented yet).
+- ScoreBoard: The screen is divided into two parts: a black rectangle on top with the current user's score and the play area itself.
+- Font: The chosen font for all text in the game is Press Start 2P.

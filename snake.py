@@ -446,6 +446,18 @@ def game(mode, difficulty):
     while running:
         clock.tick(speed)  # Adjust speed based on difficulty
 
+        # --- CHALLENGE MODE TOGGLE ---
+        if 5 < score < 10:
+            pass # Call 1st challenge function
+        elif score < 15:
+            pass # Call 2nd challenge function
+        elif score < 20:
+            pass # Call 3rd challenge function
+        elif score < 25:
+            pass # Call 4th challenge function
+        else:
+            pass # Call 5th challenge function
+
         # --- EVENT HANDLING ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
