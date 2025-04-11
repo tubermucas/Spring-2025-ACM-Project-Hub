@@ -28,3 +28,8 @@ https://github.com/Agentscreator <br />
 "Background Themes", "Background Music"
 - Background Themes: Selected and implemented five unique background designs that players can change using ESC ☘️ Forest ⛅️ Desert 🌊 Ocean ⛰️ Mountain 🌌 Space
 Background music - Added background music to give the game a music for the game https://youtu.be/PzxywNLeDrg?list=RDPzxywNLeDrg 
+**Minh** <br />
+https://github.com/CodingMinh <br />
+Speed up and teleporting apple for challenge mode
+- In challenge mode, if your score (the number of apples eaten) is >= 10 and < 15, you significantly speed up
+- If your score is >= 15 and < 20, the apples randomly teleport every 10 seconds (gotta go fast lol)
