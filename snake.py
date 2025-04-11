@@ -36,7 +36,7 @@ DIFFICULTY_COLORS = {
 # Initialize Pygame & setup display
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Snake Game")
+pygame.display.set_caption("snAkeCM")
 
 # Set up clock for controlling the frame rate
 clock = pygame.time.Clock()
@@ -389,7 +389,10 @@ def get_player_name(screen, font):
 # --- GAME ---
 
 def game(mode, difficulty):
+    # boolean variables for challenge mode toggle
     flipped_once = False
+    speed_up_once = False
+
     global screen, current_background, best_score, hard_mode_unlocked
     
     # set up the speed according to the difficulty
@@ -431,6 +434,9 @@ def game(mode, difficulty):
     snake_color = GREEN
     food = get_random_food_position()
 
+    # Initialize teleport timer for the apple (in milliseconds)
+    last_teleport_time = pygame.time.get_ticks()
+
     # define next directions, AVOID BUG OF SNAKE GOING INTO ITSELF
     next_dx, next_dy = dx, dy
 
@@ -446,8 +452,9 @@ def game(mode, difficulty):
     while running:
         clock.tick(speed)  # Adjust speed based on difficulty
 
+        # --- CHALLENGE MODE TOGGLE ---
         if mode == "Challenge Mode":
-            # --- CHALLENGE MODE TOGGLE ---
+            # only flips direction once every time you eat an apple
             if 5 <= score < 10 and not flipped_once:
                 snake.reverse()
 
@@ -461,13 +468,22 @@ def game(mode, difficulty):
                 next_dy = dy
 
                 flipped_once = True
-            elif score < 15:
-                pass # Call 2nd challenge function
-            elif score < 20:
-                pass # Call 3rd challenge function
-            elif score < 25:
+            # only speeds up once every time you eat an apple
+            elif 10 <= score < 15 and not speed_up_once:
+                speed *= 1.25
+                speed_up_once = True 
+                if score == 14: # resets the speed
+                    speed /= pow(1.25, 4)
+            elif 15 <= score < 20:
+                # Teleporting apple: update food position every 10 seconds
+                current_time = pygame.time.get_ticks()
+                if current_time - last_teleport_time >= 10000:  # 10,000 milliseconds = 10 seconds
+                    # Generate a new food position
+                    food = get_random_food_position()
+                    last_teleport_time = current_time
+            elif 20 <= score < 25:
                 pass # Call 4th challenge function
-            else:
+            elif 25 <= score < 30:
                 pass # Call 5th challenge function
 
         # --- EVENT HANDLING ---
@@ -552,7 +568,10 @@ def game(mode, difficulty):
             while temp_food in snake or temp_food is new_head:
                 temp_food = get_random_food_position()
             food = temp_food
+
+            # mark these variables as False so that we can flip/speed up again when eating an apple
             flipped_once = False
+            speed_up_once = False
         else:
             # Move forward (remove the tail)
             snake.pop()
