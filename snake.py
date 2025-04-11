@@ -76,8 +76,38 @@ SPEED_LEVELS = {"Easy": 5.0, "Normal": 10.0, "Hard": 15.0}
 SPEED_CHANGES = {"Easy": 0.25, "Normal": 0.5, "Hard": 0.75}
 speed_change = 0
 
+def show_main_menu(screen):
+    font = pygame.font.Font(font_sellected, 48)
+    option_font = pygame.font.Font(font_sellected, 36)
+    options = ["Classic Mode", "Challenge Mode"]
+    selected = 0
+
+    while True:
+        screen.fill(BLACK)
+        title = font.render("snAkeCM", True, GREEN)
+        screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 50))
+
+        for i, option in enumerate(options):
+            color = GREEN if i == selected else WHITE
+            text = option_font.render(option, True, color)
+            screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, 200 + i * 100))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected = (selected - 1) % len(options)
+                elif event.key == pygame.K_DOWN:
+                    selected = (selected + 1) % len(options)
+                elif event.key == pygame.K_RETURN:
+                    return options[selected]  # For future use if you want different behavior
+
 def show_menu(screen):
-    global speed_change, font_sellected
+    global speed_change
 
     title_font = pygame.font.Font(font_sellected, 36)
     option_font = pygame.font.Font(font_sellected, 28)
@@ -122,7 +152,7 @@ def show_menu(screen):
                     return SPEED_LEVELS[options[selected]]
                 
 def pause_menu(screen):
-    global backgrounds, current_background, font_sellected
+    global backgrounds, current_background
 
     title_font = pygame.font.Font(font_sellected, 25)
     option_font = pygame.font.Font(font_sellected, 20)
@@ -204,10 +234,13 @@ def get_random_food_position():
 # Initialize Pygame & setup display
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Snake Game")
+pygame.display.set_caption("snAkeCM")
 
 # Set up clock for controlling the frame rate
 clock = pygame.time.Clock()
+
+# Show main menu first
+selected_mode = show_main_menu(screen)
 
 # Show speed selection menu
 speed = show_menu(screen)
