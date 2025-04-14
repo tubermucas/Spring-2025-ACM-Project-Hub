@@ -23,7 +23,26 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 200, 0) # Default snake color
 YELLOW = (255, 255, 0)
-GRAY = (150, 150, 150)
+GRAY = (100, 100, 100)
+RED = (255, 0, 0)
+
+apple_colors = [
+    (244, 180, 131),  # Soft peach
+    (173, 216, 230),  # Light blue
+    (144, 190, 109),  # Mellow green
+    (255, 201, 107),  # Warm honey yellow
+    (222, 158, 214),  # Gentle pink lavender
+    (168, 218, 220),  # Muted aqua
+    (250, 214, 165),  # Apricot
+    (190, 178, 224),  # Dusty purple
+    (255, 170, 165),  # Blush coral
+    (183, 240, 177),  # Pastel green
+    (255, 222, 173),  # Light apricot (navajo white)
+    (204, 235, 197),  # Soft mint green
+    (196, 223, 230),  # Cool ice blue
+    (232, 198, 255),  # Pale lavender
+    (255, 192, 203),  # Classic soft pink
+]
 
 DIFFICULTY_COLORS = {
     "Easy": (0, 255, 0), # Bright Green
@@ -184,9 +203,9 @@ def classic_mode_screen(screen):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected = (selected - 1) % len(options)
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected = (selected + 1) % len(options)
                 elif event.key == pygame.K_RETURN:
                     return options[selected]
@@ -330,9 +349,9 @@ def death_menu(score, player_name):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected = (selected - 1) % len(options)
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected = (selected + 1) % len(options)
                 elif event.key == pygame.K_RETURN:
                     if options[selected] == "Yes":
@@ -351,15 +370,15 @@ def play_sound(sound):
 
 # Function to get random color
 def get_random_color():
-    return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+    return random.choice(apple_colors)
 
 # Function to get a random position for the food
-def get_random_food_position():
+def get_random_square_position():
     # Randomly place food within the grid (0 <= x < CELL_COUNT, SCOREBOARD_CELLS - 1 <= y < CELL_COUNT + SCOREBOARD_CELLS - 1)
     x = random.randint(0, CELL_COUNT - 1)
     y = random.randint(SCOREBOARD_CELLS + 1, CELL_COUNT + SCOREBOARD_CELLS - 1)
-    color = get_random_color()
-    return (x, y, color)
+
+    return (x, y)
 
 # Register player's name and score (Only in hard difficulty of classic mode)
 def get_player_name(screen, font):
@@ -392,6 +411,7 @@ def game(mode, difficulty):
     # boolean variables for challenge mode toggle
     flipped_once = False
     speed_up_once = False
+    obstacles_once = False
 
     global screen, current_background, best_score, hard_mode_unlocked
     
@@ -413,8 +433,6 @@ def game(mode, difficulty):
              (CELL_COUNT // 2 - 1, CELL_COUNT // 2),
              (CELL_COUNT // 2 - 2, CELL_COUNT // 2)]
 
-    font = pygame.font.Font(font_sellected, 30)
-
     # Ask player's name to store it later, only in hard difficulty
     player_name = None
     if difficulty == 'Hard' and mode == 'Classic Mode':
@@ -432,10 +450,12 @@ def game(mode, difficulty):
 
     # Place initial food and snake color
     snake_color = GREEN
-    food = get_random_food_position()
+    food = get_random_square_position()
+    apple_color = RED
+    stones = []
 
     # Initialize teleport timer for the apple (in milliseconds)
-    last_teleport_time = pygame.time.get_ticks()
+    last_time = pygame.time.get_ticks()
 
     # define next directions, AVOID BUG OF SNAKE GOING INTO ITSELF
     next_dx, next_dy = dx, dy
@@ -468,21 +488,41 @@ def game(mode, difficulty):
                 next_dy = dy
 
                 flipped_once = True
-            # only speeds up once every time you eat an apple
-            elif 10 <= score < 15 and not speed_up_once:
+            
+            elif 10 <= score < 15 and not obstacles_once:
+                # Random obstacles aka stones
+                current_time = pygame.time.get_ticks()
+                if current_time - last_time >= 5000:
+                    # Generate new stone
+                    temp_stone = get_random_square_position()
+                    while temp_stone in snake or temp_stone in new_head or temp_stone in stones:
+                        temp_stone = get_random_square_position()
+                    stone = temp_stone
+                    stones.append(stone)
+                    
+
+                    last_time = current_time
+            
+            elif 15 <= score < 20 and not speed_up_once:
+                # Speed up
+                obstacles_once = True # remove stones
+
                 speed *= 1.25
                 speed_up_once = True 
                 if score == 14: # resets the speed
                     speed /= pow(1.25, 4)
-            elif 15 <= score < 20:
+                
+            elif 20 <= score < 25:
                 # Teleporting apple: update food position every 10 seconds
                 current_time = pygame.time.get_ticks()
-                if current_time - last_teleport_time >= 10000:  # 10,000 milliseconds = 10 seconds
+                if current_time - last_time >= 5000:  # 0,000 milliseconds = 10 seconds
                     # Generate a new food position
-                    food = get_random_food_position()
-                    last_teleport_time = current_time
-            elif 20 <= score < 25:
-                pass # Call 4th challenge function
+                    temp_food = get_random_square_position()
+                    while temp_food in snake or temp_food is new_head or temp_food in stones:
+
+                        temp_food = get_random_square_position()
+                    food = temp_food
+                    last_time = current_time
             elif 25 <= score < 30:
                 pass # Call 5th challenge function
 
@@ -538,7 +578,7 @@ def game(mode, difficulty):
             new_head = (new_x, SCOREBOARD_CELLS)
 
         # 2. Check for collisions with self
-        if new_head in snake:
+        if new_head in snake or new_head in stones:
             # Hit itself -> Game Over
             play_sound(death_sound)
             pygame.time.delay(700)  # Wait for a second to let the sound play
@@ -553,20 +593,23 @@ def game(mode, difficulty):
         snake.insert(0, new_head)
 
         # 3. Check if we ate the food
-        if new_head == (food[0], food[1]):
+        if new_head == food:
             play_sound(eat_sound) # play snake eat food sound
-            snake_color = food[2] # changes snake color based on food
+            snake_color = apple_color # changes snake color based on food
             speed += speed_change # increase snake speed after eating food
             score += 1  # Increase score by 1 when food is eaten
 
+            # Unlock the Challange mode if certain score is reached
             if mode == "Classic Mode" and not hard_mode_unlocked:
-                if (score >= 10 and difficulty == 'Hard') or (score >= 20 and difficulty == 'Normal'):
+                if (score >= 0 and difficulty == 'Hard') or (score >= 20 and difficulty == 'Normal'):
                     hard_mode_unlocked = True
 
             # Generate a new food position; don't pop the tail (snake grows)
-            temp_food = get_random_food_position()
-            while temp_food in snake or temp_food is new_head:
-                temp_food = get_random_food_position()
+            temp_food = get_random_square_position()
+            while temp_food in snake or temp_food is new_head or temp_food in stones:
+                temp_food = get_random_square_position()
+
+            apple_color = get_random_color()
             food = temp_food
 
             # mark these variables as False so that we can flip/speed up again when eating an apple
@@ -584,7 +627,14 @@ def game(mode, difficulty):
 
         # Draw the score
         score_font = pygame.font.Font(font_sellected, 27)
-        score_text = score_font.render(f"Score: {score}", True, WHITE)
+
+
+         
+        score_display = f"Score: {score}"
+        if mode == 'Challenge Mode':
+            score_display += '/30'
+
+        score_text = score_font.render(score_display, True, WHITE)
         score_rect = score_text.get_rect(topleft=(score_x, score_y))
 
         screen.blit(score_text, score_rect)
@@ -594,7 +644,14 @@ def game(mode, difficulty):
             pygame.draw.rect(screen, snake_color, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
         # Draw the food
-        pygame.draw.rect(screen, food[2], (food[0] * CELL_SIZE, food[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        pygame.draw.rect(screen, apple_color, (food[0] * CELL_SIZE, food[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+
+        if obstacles_once:
+            stones.clear()
+
+        if len(stones) != 0:
+            for x, y in stones:
+                pygame.draw.rect(screen, GRAY, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
         
         pygame.display.flip()
 
