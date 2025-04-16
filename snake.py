@@ -25,6 +25,7 @@ BLACK = (0, 0, 0)
 GREEN = (0, 200, 0) # Default snake color
 YELLOW = (255, 255, 0)
 GRAY = (100, 100, 100)
+LIGHT_GRAY = (105, 105, 105)
 RED = (255, 0, 0)
 GOLD = (255, 215, 0)
 
@@ -755,7 +756,7 @@ def game(mode, difficulty):
                 pygame.draw.rect(screen, GRAY, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
         
         if blank:
-            pygame.draw.rect(screen, BLACK, (blank[0] * CELL_SIZE, blank[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+            pygame.draw.rect(screen, LIGHT_GRAY, (blank[0] * CELL_SIZE, blank[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE))
         
         pygame.display.flip()
 
